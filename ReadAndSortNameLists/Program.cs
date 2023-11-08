@@ -1,5 +1,6 @@
 ﻿using ReadAndSortNameLists.Classes;
 
+// You need to set your own base directory.
 string DIRECTORY = "C:\\Users\\someUser\\someFolder";
 string BASEFILENAME = "FirstAndLastNamesList";
 string EXTENSION = ".txt";
