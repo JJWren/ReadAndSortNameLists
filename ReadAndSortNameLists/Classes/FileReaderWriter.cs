@@ -1,7 +1,9 @@
-﻿using System;
+﻿using RandomChallenges.Classes.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ReadAndSortNameLists.Classes
@@ -61,23 +63,43 @@ namespace ReadAndSortNameLists.Classes
 
             string path = Path.Combine(directory, fileName);
 
-            if (File.Exists($"{directory}\\{fileName}"))
+            if (File.Exists(path))
             {
-                fileName = GenerateNewFileName(directory, fileName);
+                fileName = AppendFileNumberIfFileExists(path);
                 path = Path.Combine(directory, fileName);
             }
 
             return path;
         }
 
-        private static string GenerateNewFileName(string directory, string fileName)
+        private static string AppendFileNumberIfFileExists(string filePath, string extension = "")
         {
-            int i = 1;
-            while (File.Exists($"{directory}\\{fileName}"))
+            string directory = Path.GetDirectoryName(filePath)!;
+            string fileName = Path.GetFileNameWithoutExtension(filePath);
+            extension = (extension == string.Empty)
+                ? Path.GetExtension(filePath)
+                : extension;
+            int fileNumber = 0;
+            Regex r = new (@"\(([0-9]+)\)$");
+            Match match = r.Match(fileName);
+            string addSpace = " ";
+
+            if (match.Success)
             {
-                fileName += $" - Copy({i})";
-                i++;
+                addSpace = string.Empty;
+                string numStr = match.Groups[1].Captures[0].Value;
+                fileNumber = int.Parse(numStr);
+                fileName = fileName.Replace($"({numStr})", "");
             }
+
+            do
+            {
+                fileNumber++;
+                fileName = Path.Combine(
+                    directory,
+                    $"{fileName}{addSpace}({fileNumber}){extension}");
+            }
+            while (match.Success);
 
             return fileName;
         }
