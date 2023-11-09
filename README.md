@@ -32,8 +32,7 @@ Currently, the `FileReaderWriter` class has two ways of interacting with text fi
 See the `Sample` folder for example input and output files.
 
 ## Shoutout and Thanks To
-https://www.name-generator.org.uk/quick/
-I utilized the above website for creating a quick list of 100 random names for my sample file. It was extremely quick and easy to use and has great options for producing desired output -- male names, female names, both types, and an option for choosing how many you would like to generate! I highly recommend this site for it's ease of use and great options.
+I utilized [this website](https://www.name-generator.org.uk/quick/) for creating a quick list of 100 random names for my sample file. It was extremely quick and easy to use and has great options for producing desired output -- male names, female names, both types, and an option for choosing how many you would like to generate! I highly recommend this site for it's ease of use and great options.
 
 ## Future Plans:
 - Create a method that reads in a txt file, then outputs the names into the same or new file immediately without having to call the first two methods seperately in `Program.cs`.
