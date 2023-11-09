@@ -38,9 +38,13 @@ namespace ReadAndSortNameLists.Classes
             return contacts;
         }
 
-        internal static void CreateTxtFileOfNamesFromContactList(List<Contact> contacts, bool listLastNameFirst, string directory, string fileName)
+        internal static void CreateTxtFileOfNamesFromContactList(
+            List<Contact> contacts,
+            bool listLastNameFirst,
+            string filePath,
+            string desiredFileName)
         {
-            string fullPath = CheckIfDirectoryAndFileExistAndCombinePath(directory, fileName);
+            filePath = CreateValidPathIfDoesNotExist(filePath, desiredFileName, ".txt");
 
             List<string> names = new();
             foreach (Contact contact in contacts)
@@ -51,25 +55,30 @@ namespace ReadAndSortNameLists.Classes
                     names.Add(contact.GetFullName());
             }
 
-            File.WriteAllLines(fullPath, names);
+            File.WriteAllLines(filePath, names);
         }
 
-        private static string CheckIfDirectoryAndFileExistAndCombinePath(string directory, string fileName)
+        private static string CreateValidPathIfDoesNotExist(string filePath, string desiredFileName, string desiredExtension)
         {
-            if (!Directory.Exists(directory))
+            string directory;
+            if (Path.GetDirectoryName(filePath) == string.Empty)
             {
-                Directory.CreateDirectory(directory);
+                directory = Directory.CreateDirectory(filePath).FullName;
+            }
+            else
+            {
+                directory = Path.GetDirectoryName(filePath)!;
             }
 
-            string path = Path.Combine(directory, fileName);
+            string fileName = (Path.GetFileNameWithoutExtension(filePath) == string.Empty)
+                ? desiredFileName
+                : Path.GetFileNameWithoutExtension(filePath);
+            string extension = (Path.GetExtension(filePath) == string.Empty)
+                ? desiredExtension
+                : Path.GetExtension(filePath);
+            string fullPath = Path.Combine(directory, $"{fileName}{extension}");
 
-            if (File.Exists(path))
-            {
-                fileName = AppendFileNumberIfFileExists(path);
-                path = Path.Combine(directory, fileName);
-            }
-
-            return path;
+            return AppendFileNumberIfFileExists(fullPath);
         }
 
         private static string AppendFileNumberIfFileExists(string filePath, string extension = "")
@@ -95,13 +104,13 @@ namespace ReadAndSortNameLists.Classes
             do
             {
                 fileNumber++;
-                fileName = Path.Combine(
+                filePath = Path.Combine(
                     directory,
                     $"{fileName}{addSpace}({fileNumber}){extension}");
             }
-            while (match.Success);
+            while (File.Exists(filePath));
 
-            return fileName;
+            return filePath;
         }
     }
 }
